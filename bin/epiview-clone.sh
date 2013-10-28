@@ -1,2 +1,2 @@
 #!/bin/bash
-git clone https://github.com/philgoebel/epiview.git
+git clone https://github.com/mritchie/epiview.git
