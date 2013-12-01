@@ -162,11 +162,20 @@ RCircos.Demo.Human <- function(input, output)
 
 	# rdline = "y" #readline("Add histogram track (y/n): ");
 	if (input$histogram){
+            if (is.null(input$histonefile) | TRUE){ #TODO: remove |TRUE, debug only
 	data(RCircos.Histogram.Data);
+        else {
+	    histonedata(data/data.rda);}
 	data.col <- 4;
 	track.num <- 8; 
-	RCircos.Histogram.Plot(RCircos.Histogram.Data, data.col, track.num, "in");
-	}
+            if (is.null(input$histonefile) | TRUE){ #TODO: remove second if else
+
+	    RCircos.Histogram.Plot(RCircos.Histogram.Data, data.col, track.num, "in");
+        }
+            else{
+	    RCircos.Histogram.Plot(histonedata, data.col, track.num, "in");
+            }
+        }
 
 	#	Tile plot. Note: tile plot data have chromosome locations and each
 	#	data file is for one track

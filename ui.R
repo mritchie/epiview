@@ -12,6 +12,7 @@ shinyUI(pageWithSidebar(
     checkboxInput(inputId = 'histogram', 'Histogram', TRUE),
     checkboxInput(inputId = 'tiletrack', 'Tiletrack', FALSE),
     br(),
+    fileInput(inputId = 'histonefile', 'Upload suitable histone data file', accept = c('.rda')),
     submitButton("Update View")
   ),
   mainPanel(
