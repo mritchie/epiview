@@ -163,7 +163,7 @@ RCircos.Demo.Human <- function(input, output)
 	# rdline = "y" #readline("Add histogram track (y/n): ");
 	if (input$histogram){
             if (is.null(input$histonefile) | TRUE){ #TODO: remove |TRUE, debug only
-	data(RCircos.Histogram.Data);
+                data(RCircos.Histogram.Data);}
         else {
 	    histonedata(data/data.rda);}
 	data.col <- 4;
