@@ -23,13 +23,14 @@ RCircos.Demo.Human <- function(input, output)
 	#	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 	
 	library(RCircos);
+    #source("./RCircos/RCircos/R/RCircos.rdx")  # Need proper address to alter
 
 
 	#	Load human cytoband data 
 	#  	_________________________________________________________________
 	#	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	data(UCSC.HG19.Human.CytoBandIdeogram);
+    data(UCSC.HG19.Human.CytoBandIdeogram);
 	cyto.info <- UCSC.HG19.Human.CytoBandIdeogram;
 
 
@@ -53,43 +54,33 @@ RCircos.Demo.Human <- function(input, output)
 
 	# newchrom = 11
 	exclude = c(1:22,'X','Y')
-	include = input$newchrom
-  chroms = strsplit(input$newchrom,split=",")
-  if (length(chroms[[1]]) == 0) chroms = c("default")
-  #print(chroms)
-  for (chrom in chroms){
-    print(c('chrom',chrom))
+    include = strsplit(input$newchrom,split=",")[[1]]
+    
+    #Remove spaces
+    include = gsub(" ","",include,fixed=TRUE)
+
+  if (length(include) == 0) include = c("default")
+  print(include)
+  for (chrom in include){
+      print(c('chrom',chrom))
     if (!grepl('-',chrom)) exclude = exclude[which(exclude != chrom)]
       else {    # range entered
-    print("processing range")
-    chromrange = strsplit(chrom,'-')[[1]]  # Identify range
-    print(c(chromrange[1],chromrange[2]))
-    for (ch in chromrange[1]:chromrange[2]) exclude = exclude[which(exclude != ch)]
+          print("processing range");
+    chromrange = strsplit(chrom,'-')[[1]];  # Identify range
+    for (ch in chromrange[1]:chromrange[2]) exclude = exclude[which(exclude != ch)];
       }
   }
-  print(exclude)
 	for (chrom in include) exclude = exclude[which(exclude != chrom)]
-		#newchrom <- 11 #readline("Enter new chromosome to include: ")
-	#} 
-	if (length(exclude) == 24) exclude = c()	# Include all if none chosen
-	exclude = paste0('chr',exclude)   # vector of excluded chromosomes 
-
+	if (length(exclude) == 24) exclude = c();	# Include all if none chosen
+	exclude = paste0('chr',exclude);   # vector of excluded chromosomes
 	RCircos.Set.Core.Components(cyto.info, exclude, 10, 0);
 
-	#outname = paste("Human",exclude,collapse=TRUE)  #TODO: concatenate to make filename
-	#print(outname)
-	#	Open the graphic device (here a pdf file)
-	#
-	#png(file="RCircos.Demo.Human.png", height=8, width=8, unit="in", type="cairo", res=300);
-	#
- 	#	tiff(file="RCircos.Demo.Human.tif", height=8, width=8, unit="in", 
-	#		type="cairo", res=300);
 	#  	_________________________________________________________________
 	#	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
+    print("cat");
 	cat("Open graphic device and start plot ...\n");
 	#pdf(file="RCircos.Demo.Human.pdf", height=8, width=8);
-
+    print("RCircos.Set.Plot>Area");
 	RCircos.Set.Plot.Area();
 	title("RCircos 2D Track Plot with Human Genome");
 
@@ -107,75 +98,73 @@ RCircos.Demo.Human <- function(input, output)
 	#	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 	cat("Add Gene and connector tracks ...\n");
-	data(RCircos.Gene.Label.Data);
-
 	track.num <- 1;
 	direction <- "in";
-	RCircos.Gene.Connector.Plot(RCircos.Gene.Label.Data, 
-			track.num, direction);
 	name.col <- 4;
 	track.num <- 2;
-	RCircos.Gene.Name.Plot(RCircos.Gene.Label.Data, name.col, 
-			track.num, direction);
-
-
+    data(RCircos.Gene.Label.Data);
+    RCircos.Gene.Connector.Plot(RCircos.Gene.Label.Data,track.num, direction);
+    RCircos.Gene.Name.Plot(RCircos.Gene.Label.Data, name.col,track.num, direction);
+    
 	#	Heatmap plot.  Since some gene names plotted above are longer 
 	#	than one track height, we skip two tracks 
 	#  	_________________________________________________________________
 	#	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	# rdline = "y" # readline("Add heatmap track (y/n): ");
 	if (input$heatmap){
-		data(RCircos.Heatmap.Data);
 		data.col <- 6;
 		track.num <- 5;	
-		RCircos.Heatmap.Plot(RCircos.Heatmap.Data, data.col, track.num, "in");
-	}	
+        data(RCircos.Heatmap.Data);
+        RCircos.Heatmap.Plot(RCircos.Heatmap.Data, data.col, track.num, direction);
+	}
 
 	#	Scatterplot
 	#  	_________________________________________________________________
 	#	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	# rdline = "y" #readline("Add scatterplot track (y/n): ");
-	if (input$scatterplot){
-	data(RCircos.Scatter.Data);
-	data.col <- 5;
-	track.num <- 6; 
-	RCircos.Scatter.Plot(RCircos.Scatter.Data, data.col, track.num, "in", 1);
+    if (input$scatterplot){
+        data.col <- 5;
+        track.num <- 6;
+        data(RCircos.Scatter.Data);
+        RCircos.Scatter.Plot(RCircos.Scatter.Data, data.col, track.num, direction, 1);
 	}
 
 	#	Line plot.
 	#  	_________________________________________________________________
 	#	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	# rdline = "y" #readline("Add line plot track (y/n): ");
 	if (input$line){
-	data(RCircos.Line.Data);
-	data.col <- 5;
-	track.num <- 7;
-	RCircos.Line.Plot(RCircos.Line.Data, data.col, track.num, "in");
+        data.col <- 5;
+        track.num <- 7;
+        data(RCircos.Line.Data);
+        RCircos.Line.Plot(RCircos.Line.Data, data.col, track.num, direction);
 	}
 
 	#	Histogram plot
 	#  	_________________________________________________________________
 	#	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	# rdline = "y" #readline("Add histogram track (y/n): ");
+    print(input$histonefile$name)
 	if (input$histogram){
-            if (is.null(input$histonefile) | TRUE){ #TODO: remove |TRUE, debug only
-                data(RCircos.Histogram.Data);}
+        data.col <- 4;
+        track.num <- 8;
+        
+        # If no histone file selected use default
+        if (is.null(input$histonefile)) histonename = "RCircos.Histogram.Data"
         else {
-	    histonedata(data/data.rda);}
-	data.col <- 4;
-	track.num <- 8; 
-            if (is.null(input$histonefile) | TRUE){ #TODO: remove second if else
-
-	    RCircos.Histogram.Plot(RCircos.Histogram.Data, data.col, track.num, "in");
-        }
-            else{
-	    RCircos.Histogram.Plot(histonedata, data.col, track.num, "in");
+            histonename = input$histonefile$name
+            # Remove '.RData' from end if necessary
+            if (substr(histonename,nchar(histonename)-4,nchar(histonename))=="RData"){
+            histonename = substr(histonename,1,nchar(histonename)-6)
             }
         }
+        # read data
+        readstring = paste("data(",histonename,")");
+        eval(parse(text=readstring));
+        #plot data
+        RCircos.Histogram.Plot(eval(parse(text=histonename)), data.col, track.num, direction);
+    }
+    
 
 	#	Tile plot. Note: tile plot data have chromosome locations and each
 	#	data file is for one track
@@ -186,7 +175,7 @@ RCircos.Demo.Human <- function(input, output)
 	if (input$tiletrack){
 	data(RCircos.Tile.Data);
 	track.num <- 9;
-	RCircos.Tile.Plot(RCircos.Tile.Data, track.num, "in");
+	RCircos.Tile.Plot(RCircos.Tile.Data, track.num, direction);
 	}
 
 	#	Link lines. Link data has only paired chromosome locations in
@@ -195,18 +184,11 @@ RCircos.Demo.Human <- function(input, output)
 	#  	_________________________________________________________________
 	#	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	#rdline = readline("Add link track ...\n");	# Will probably remove this bit
-	#if (rdline == 'y' & FALSE){
-	#data(RCircos.Link.Data);
-	#track.num <- 11;
-	#RCircos.Link.Plot(RCircos.Link.Data, track.num, FALSE);
+	data(RCircos.Link.Data);
+	track.num <- 11;
+	RCircos.Link.Plot(RCircos.Link.Data, track.num, FALSE);
 	#}
 
-	#	Close the graphic device and clear memory
-	#  	_________________________________________________________________
-	#	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-	#dev.off();
 	cat("R Circos Demo Done ...\n\n");
 	rm(list=ls(all=T));
 }

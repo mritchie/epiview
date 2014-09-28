@@ -3,8 +3,8 @@ library(shiny)
 shinyUI(pageWithSidebar(
   headerPanel("EPI View"),
   sidebarPanel(
-    textInput("newchrom", "Chromosomes to view (1-22, X,Y):", value = "X,Y"),
-    helpText("Use a dash to select a range and a comma to seperate values. No Spaces! and Y cannot be seen on its own. eg. 4-7, 21, X"),
+    textInput("newchrom", "Chromosomes to view (1-22, X,Y):", value = "21,X,Y"),
+    helpText("Use a dash to select a range and a comma to seperate values. X and Y cannot be seen on their own. eg. 4-7, 21"),
     br(),
     checkboxInput(inputId = 'heatmap', 'Heatmap', FALSE),
     checkboxInput(inputId = 'scatterplot', 'Scatterplot', FALSE),
